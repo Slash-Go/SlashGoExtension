@@ -1,0 +1,40 @@
+{
+    "name": "slashgo-extension",
+    "version": "0.0.1",
+    "description": "Web extension for SlashGo, an open-source, org-wide shared shortlink manager",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Slash-Go/SlashGoExtension.git"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Slash-Go/SlashGoExtension/issues"
+    },
+    "homepage": "https://github.com/Slash-Go/SlashGoExtension#README",
+    "scripts": {
+        "watch:tailwind": "postcss public/css/tailwind.css -o public/css/index.css -w",
+        "build:tailwind": "NODE_ENV=production postcss public/css/tailwind.css -o public/css/index.css",
+        "dev": "concurrently \"npm run watch:tailwind\" \"vite build -w\"",
+        "build": "npm run build:tailwind && vite build",
+        "check": "svelte-check --tsconfig ./tsconfig.json"
+    },
+    "devDependencies": {
+        "@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
+        "@tsconfig/svelte": "^3.0.0",
+        "@types/chrome": "^0.0.191",
+        "@vespaiach/axios-fetch-adapter": "^0.3.0",
+        "autoprefixer": "^10.4.12",
+        "axios": "^0.27.2",
+        "concurrently": "^7.4.0",
+        "postcss": "^8.4.16",
+        "postcss-cli": "^10.0.0",
+        "svelte": "^3.44.0",
+        "svelte-check": "^2.8.0",
+        "svelte-preprocess": "^4.10.7",
+        "tailwindcss": "^3.1.8",
+        "tslib": "^2.4.0",
+        "typescript": "^4.7.4",
+        "vite": "^3.0.0"
+    }
+}
