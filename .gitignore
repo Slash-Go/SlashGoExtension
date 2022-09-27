@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Processed tailwind file
+public/css/index.css
