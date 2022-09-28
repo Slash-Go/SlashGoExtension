@@ -1,0 +1,39 @@
+{
+  "name": "SlashGo",
+  "description": "All your links are just a single slash away.",
+  "version": "0.1",
+  "manifest_version": 3,
+  "icons": {
+    "16": "/icons/icon-16.png",
+    "32": "/icons/icon-32.png",
+    "48": "/icons/icon-48.png",
+    "96": "/icons/icon-96.png",
+    "128": "/icons/icon-128.png",
+    "192": "/icons/icon-192.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/pages/content/index.js"]
+    }
+  ],
+  "background": {
+    "service_worker": "src/pages/background/index.js",
+    "type": "module"
+  },
+  "options_page": "src/pages/options/index.html",
+  "action": {
+    "default_popup": "src/pages/popup/index.html",
+    "default_icon": {
+      "16": "/icons/icon-16.png",
+      "32": "/icons/icon-32.png",
+      "48": "/icons/icon-48.png",
+      "96": "/icons/icon-96.png",
+      "128": "/icons/icon-128.png",
+      "192": "/icons/icon-192.png"
+    }
+  },
+  "host_permissions": ["<all_urls>"],
+  "omnibox": { "keyword": "go/" },
+  "permissions": ["storage", "tabs", "alarms", "declarativeNetRequest"]
+}
