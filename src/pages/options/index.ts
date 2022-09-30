@@ -12,7 +12,7 @@ function loadApp() {
       accessToken: "",
       refreshToken: "",
       lastVerifiedAt: null,
-      domain: "https://hashbang-api.fly.dev",
+      domain: "https://slashgo-server.fly.dev",
     } as IStorage,
     ({ accessToken, refreshToken, lastVerifiedAt, domain }: IStorage) => {
       accessTokenS.set(accessToken);
