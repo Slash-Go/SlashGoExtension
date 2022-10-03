@@ -2,10 +2,19 @@
   import { onMount } from "svelte";
   import Delete from "./icons/Delete.svelte";
   import LockSolid from "./icons/LockSolid.svelte";
+  import { accessToken, refreshToken, orgHero } from "../stores/context";
 
   let successMessage: string = null,
     errorMessage: string = null,
     links = [];
+
+  const logout = () => {
+    chrome.storage.sync.clear(() => {
+      $accessToken = "";
+      $refreshToken = "";
+      chrome.runtime.sendMessage({ command: "logout" });
+    });
+  };
 
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg.type === "delete_link_response") {
@@ -67,7 +76,7 @@
                 <tr>
                   <td class="p-2">
                     <div class="font-bold text-gray-800 text-lg text-ellipsis">
-                      go/{#if link.private}my/{/if}{link.shortLink}
+                      {$orgHero}/{#if link.private}my/{/if}{link.shortLink}
                     </div>
                     <div class="flex">
                       <div class="text-right text-xs ">{link.type} |&nbsp;</div>
@@ -101,6 +110,11 @@
             </tbody>
           </table>
         </div>
+      </div>
+      <div
+        class="text-center p-2 text-red-400 hover:text-red-600 font-bold underline underline-offset-4 text-sm"
+      >
+        <a on:click={() => logout()} href="#logout">Logout</a>
       </div>
     </div>
   </section>
