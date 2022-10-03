@@ -3,6 +3,20 @@
   import LockOpenSolid from "./icons/LockOpenSolid.svelte";
   import LockSolid from "./icons/LockSolid.svelte";
 
+  const doesNotContainSpace = (text) => {
+    if (!text.includes(" ")) return true;
+    return false;
+  };
+
+  const hasValidLength = (text) => {
+    if (text.length >= 1) return true;
+    return false;
+  };
+
+  const isValidShortLink = (text) => {
+    return hasValidLength(text) && doesNotContainSpace(text);
+  };
+
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg.type === "create_link_response") {
       isCreatingShortLink = false;
@@ -131,7 +145,7 @@
           {/if}
           <div class="w-100 text-center">
             <button
-              disabled={shortLink.length == 0 || isCreatingShortLink}
+              disabled={!isValidShortLink(shortLink) || isCreatingShortLink}
               class="disabled:opacity-50 mt-2 w-60 mb-2 bg-red-500 hover:bg-red-600 text-white font-bold pt-2 pb-2 pl-6 pr-4 rounded"
               type="submit"
               >{isCreatingShortLink ? "Creating..." : "Create"}</button
