@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import LockOpenSolid from "./icons/LockOpenSolid.svelte";
   import LockSolid from "./icons/LockSolid.svelte";
 
@@ -25,6 +26,8 @@
   const privatePath = `my/`;
   $: displayPath = isPrivate ? slashGoHero + privatePath : slashGoHero;
 
+  let shortLinkInput;
+
   const createLink = async (url: string) => {
     errorMessage = "";
     successMessage = "";
@@ -48,6 +51,10 @@
       createLink(selectedType === `dynamic` ? dynamicUrl : tabs[0].url);
     });
   };
+
+  onMount(() => {
+    shortLinkInput.focus();
+  });
 </script>
 
 <section class="antialiased bg-gray-100 text-gray-600 h-screen px-4">
@@ -62,6 +69,7 @@
               {displayPath}
             </div>
             <input
+              bind:this={shortLinkInput}
               bind:value={shortLink}
               type="input"
               class="text-lg text-slate-500 mt-1 mb-1 pl-1 border border-slate-300 text-left"
