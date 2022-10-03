@@ -22,6 +22,9 @@ chrome.runtime.onMessage.addListener((message) => {
     stopSync().then(() => startSync());
   } else if (message.command == "run_sync") {
     runSyncCycle();
+  } else if (message.command == "logout") {
+    stopSync();
+    sendLogoutMessage();
   } else if (message.command == "create_link") {
     createLink(
       message.data.shortLink,
@@ -48,7 +51,14 @@ chrome.omnibox.onInputEntered.addListener((text) => {
 });
 
 const stopSync = async () => {
+  console.log("Stopping Background Sync!");
   chrome.alarms.clear("periodic-sync");
+};
+
+const sendLogoutMessage = async () => {
+  chrome.runtime.sendMessage({ type: "logout" }).catch(() => {
+    console.log("Logout message ignored");
+  });
 };
 
 const startSync = async () => {
