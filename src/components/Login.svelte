@@ -14,6 +14,8 @@
     errorMessage = "",
     moreOptions = false;
 
+  let isLoggingIn: boolean = false;
+
   const save = async () => {
     const storage: IStorage = {
       accessToken: $accessToken,
@@ -34,6 +36,7 @@
   };
 
   $: submit = async () => {
+    isLoggingIn = true;
     axios
       .post(`${$domain}/auth/login`, {
         email,
@@ -56,6 +59,9 @@
         } else {
           errorMessage = `Unable to log user in`;
         }
+      })
+      .finally(() => {
+        isLoggingIn = false;
       });
   };
 </script>
@@ -79,12 +85,14 @@
         type="email"
         class="m-1 p-2 border border-slate-300 rounded-md text-center"
         placeholder="username@domain.com"
+        required
       />
       <input
         bind:value={password}
         type="password"
         class="m-1 p-2 border border-slate-300 rounded-md text-center"
         placeholder="password"
+        required
       />
 
       <div
@@ -99,12 +107,14 @@
           type="string"
           class="m-1 p-2 border border-slate-300 rounded-md text-center"
           placeholder="slashGo domain"
+          required
         />
       {/if}
 
       <button
-        class="mt-2 mb-2 bg-red-500 hover:bg-red-600 text-white font-bold p-2 rounded"
-        type="submit">Sign In</button
+        disabled={isLoggingIn}
+        class="disabled:opacity-50 mt-2 mb-2 bg-red-500 hover:bg-red-600 text-white font-bold p-2 rounded"
+        type="submit">{isLoggingIn ? "Signing in..." : "Sign In"}</button
       >
     </form>
   </div>
