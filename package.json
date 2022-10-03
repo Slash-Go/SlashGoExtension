@@ -30,6 +30,7 @@
     "postcss": "^8.4.16",
     "postcss-cli": "^10.0.0",
     "prettier": "^2.7.1",
+    "prettier-plugin-svelte": "^2.7.1",
     "svelte": "^3.44.0",
     "svelte-check": "^2.8.0",
     "svelte-preprocess": "^4.10.7",
