@@ -5,6 +5,7 @@
 
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg.type === "create_link_response") {
+      isCreatingShortLink = false;
       if (msg.status === "success") {
         successMessage = "Success! You can now slash/go to your new shortlink";
       } else {
@@ -13,6 +14,8 @@
       selectedType = `static`;
     }
   });
+
+  let isCreatingShortLink: boolean = false;
 
   let successMessage: string = null,
     errorMessage: string = null;
@@ -29,6 +32,7 @@
   let shortLinkInput;
 
   const createLink = async (url: string) => {
+    isCreatingShortLink = true;
     errorMessage = "";
     successMessage = "";
 
@@ -79,7 +83,7 @@
               on:click={() => (isPrivate = !isPrivate)}
               class="ease-in hover:cursor-pointer select-none text-slate-500 {isPrivate
                 ? 'bg-gray-300'
-                : ''} text-sm mt-1 p-2 mb-1 text-lg border border-slate-300 rounded-r-md text-left"
+                : ''} mt-1 p-2 mb-1 text-lg border border-slate-300 rounded-r-md text-left"
             >
               {#if isPrivate}
                 <LockSolid size="20px" />
@@ -127,9 +131,10 @@
           {/if}
           <div class="w-100 text-center">
             <button
-              disabled={shortLink.length == 0}
+              disabled={shortLink.length == 0 || isCreatingShortLink}
               class="disabled:opacity-50 mt-2 w-60 mb-2 bg-red-500 hover:bg-red-600 text-white font-bold pt-2 pb-2 pl-6 pr-4 rounded"
-              type="submit">Create</button
+              type="submit"
+              >{isCreatingShortLink ? "Creating..." : "Create"}</button
             >
           </div>
         </form>
