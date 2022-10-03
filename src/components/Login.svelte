@@ -82,12 +82,14 @@
         type="email"
         class="m-1 p-2 border border-slate-300 rounded-md text-center"
         placeholder="username@domain.com"
+        required
       />
       <input
         bind:value={password}
         type="password"
         class="m-1 p-2 border border-slate-300 rounded-md text-center"
         placeholder="password"
+        required
       />
 
       <div
@@ -102,6 +104,7 @@
           type="string"
           class="m-1 p-2 border border-slate-300 rounded-md text-center"
           placeholder="slashGo domain"
+          required
         />
       {/if}
 
