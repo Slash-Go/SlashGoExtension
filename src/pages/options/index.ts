@@ -12,7 +12,7 @@ function loadApp() {
       accessToken: "",
       refreshToken: "",
       lastVerifiedAt: null,
-      domain: "https://slashgo-server.fly.dev",
+      domain: "https://api.slashgo.link",
     } as IStorage,
     ({ accessToken, refreshToken, lastVerifiedAt, domain }: IStorage) => {
       accessTokenS.set(accessToken);
