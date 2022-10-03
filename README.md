@@ -2,7 +2,7 @@
 
 ## How to run
 
-```bash
+```
 // install dependencies
 $ npm i
 
@@ -20,4 +20,4 @@ $ npm run dev
 
 ### Supported Browsers
 
-SlashGo uses [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/) in order to build a future-proof, cross-browser web extension, especially given that nearly all Chrome-* browsers support MV3 already. As such, SlashGo is supported on all such browsers, the notable exception being **Mozilla Firefox**, which is due to provide MV3 support [later this year](https://blog.mozilla.org/addons/2022/06/08/manifest-v3-firefox-developer-preview-how-to-get-involved/). 
+SlashGo uses [Manifest V3](https://developer.chrome.com/docs/extensions/mv3/intro/) in order to build a future-proof, cross-browser web extension, especially given that nearly all Chrome-\* browsers support MV3 already. As such, SlashGo is supported on all such browsers, the notable exception being **Mozilla Firefox**, which is due to provide MV3 support [later this year](https://blog.mozilla.org/addons/2022/06/08/manifest-v3-firefox-developer-preview-how-to-get-involved/).
