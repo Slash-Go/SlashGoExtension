@@ -6,6 +6,7 @@
     refreshToken,
     lastVerifiedAt,
     domain,
+    orgHero,
   } from "../stores/context";
 
   let email: string = "",
@@ -19,6 +20,7 @@
       refreshToken: $refreshToken,
       lastVerifiedAt: $lastVerifiedAt,
       domain: $domain,
+      orgHero: $orgHero,
     };
 
     chrome.storage.sync.set(storage, () => {
@@ -41,6 +43,7 @@
         if (response.status === 200) {
           $accessToken = response.data.accessToken;
           $refreshToken = response.data.refreshToken;
+          $orgHero = response.data.orgHero;
           $lastVerifiedAt = new Date().toISOString();
           errorMessage = "";
           save();

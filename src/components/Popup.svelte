@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { slashGoHero } from "src/stores/context";
   import { onMount } from "svelte";
   import LockOpenSolid from "./icons/LockOpenSolid.svelte";
   import LockSolid from "./icons/LockSolid.svelte";
@@ -21,10 +22,10 @@
   let selectedType: string = `static`;
   let dynamicUrl: string = "";
 
-  //TODO: Make this Dynamic
-  const slashGoHero = `go/`;
   const privatePath = `my/`;
-  $: displayPath = isPrivate ? slashGoHero + privatePath : slashGoHero;
+  $: displayPath = isPrivate
+    ? `${$slashGoHero}/${privatePath}`
+    : `${$slashGoHero}/`;
 
   let shortLinkInput;
 

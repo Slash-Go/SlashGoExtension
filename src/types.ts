@@ -3,4 +3,5 @@ export type IStorage = {
   refreshToken: string;
   lastVerifiedAt: string;
   domain: string;
+  orgHero: string;
 };

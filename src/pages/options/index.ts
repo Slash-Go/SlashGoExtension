@@ -4,6 +4,7 @@ import {
   accessToken as accessTokenS,
   refreshToken as refreshTokenS,
   lastVerifiedAt as lastVerifiedAtS,
+  orgHero as orgHeroS,
 } from "../../stores/context";
 
 function loadApp() {
@@ -13,10 +14,18 @@ function loadApp() {
       refreshToken: "",
       lastVerifiedAt: null,
       domain: "https://api.slashgo.link",
+      orgHero: "go",
     } as IStorage,
-    ({ accessToken, refreshToken, lastVerifiedAt, domain }: IStorage) => {
+    ({
+      accessToken,
+      refreshToken,
+      lastVerifiedAt,
+      domain,
+      orgHero,
+    }: IStorage) => {
       accessTokenS.set(accessToken);
       refreshTokenS.set(refreshToken);
+      orgHeroS.set(orgHero);
       lastVerifiedAtS.set(lastVerifiedAt);
 
       const app = new App({

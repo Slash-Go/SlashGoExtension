@@ -11,7 +11,7 @@ import {
 let accessTokenGlobal = "",
   domainGlobal = "",
   refreshTokenGlobal = "",
-  slashGoHero = "go";
+  orgHeroGlobal = "go";
 
 chrome.runtime.onInstalled.addListener(() => {
   stopSync().then(() => startSync());
@@ -53,11 +53,17 @@ const stopSync = async () => {
 
 const startSync = async () => {
   chrome.storage.sync.get(
-    { accessToken: "", refreshToken: "", domain: "" } as IStorage,
-    ({ accessToken, refreshToken, domain }: IStorage) => {
+    {
+      accessToken: "",
+      refreshToken: "",
+      domain: "",
+      orgHero: "go",
+    } as IStorage,
+    ({ accessToken, refreshToken, domain, orgHero }: IStorage) => {
       accessTokenGlobal = accessToken;
       domainGlobal = domain;
       refreshTokenGlobal = refreshToken;
+      orgHeroGlobal = orgHero;
       if (domain != "" && accessToken != "") {
         chrome.alarms.create("periodic-sync", { periodInMinutes: 1 });
         runSyncCycle();
@@ -111,7 +117,7 @@ const createLink = async (
           createLink(shortLink, url, selectedType, isPrivate, true);
         });
       } else {
-        save("", "", new Date(), domainGlobal);
+        save("", "", new Date(), domainGlobal, orgHeroGlobal);
       }
     });
 };
@@ -145,7 +151,7 @@ const deleteLink = async (id: string, refreshed: boolean = false) => {
           deleteLink(id, true);
         });
       } else {
-        save("", "", new Date(), domainGlobal);
+        save("", "", new Date(), domainGlobal, orgHeroGlobal);
       }
     });
 };
@@ -176,7 +182,7 @@ const runSyncCycle = (refreshed: boolean = false) => {
           runSyncCycle(true);
         });
       } else {
-        save("", "", new Date(), domainGlobal);
+        save("", "", new Date(), domainGlobal, orgHeroGlobal);
       }
     });
 };
@@ -197,10 +203,10 @@ const createRules = (links: any, deleteRules: number[]) => {
   let count = 0;
   for (let i = 0; i < links.length; i++) {
     if (links[i].type === `default` || links[i].type === `static`) {
-      rules.push(staticProcessor(slashGoHero, links[i], 1337 + count));
+      rules.push(staticProcessor(orgHeroGlobal, links[i], 1337 + count));
       count += 1;
     } else if (links[i].type === `dynamic`) {
-      rules.push(dynamicProcessor(slashGoHero, links[i], 1337 + count));
+      rules.push(dynamicProcessor(orgHeroGlobal, links[i], 1337 + count));
       count += 1;
     }
   }
@@ -235,7 +241,7 @@ const addSearchEngineInterceptRules = () => {
   for (let i = 0; i < searchEngineQueries.length; i++) {
     rules.push(
       searchEngineQueryInterceptProcessor(
-        slashGoHero,
+        orgHeroGlobal,
         searchEngineQueries[i],
         1000 + count
       )
@@ -251,7 +257,7 @@ const addSearchEngineInterceptRules = () => {
 
 const addDefaultEngineInterceptRules = () => {
   let rules = [];
-  rules.push(defaultQueryInterceptProcessor(slashGoHero));
+  rules.push(defaultQueryInterceptProcessor(orgHeroGlobal));
 
   chrome.declarativeNetRequest.updateSessionRules({
     removeRuleIds: [1000],
@@ -276,7 +282,8 @@ const refreshToken = async () => {
         response.data.accessToken,
         refreshTokenGlobal,
         new Date(),
-        domainGlobal
+        domainGlobal,
+        response.data.orgHero
       );
     }
 
@@ -285,7 +292,7 @@ const refreshToken = async () => {
     console.log("Refreshing token unsuccessful");
     if (e.response.status == 401) {
       // Logout User
-      save("", "", new Date(), domainGlobal);
+      save("", "", new Date(), domainGlobal, orgHeroGlobal);
     }
   }
 };
@@ -294,17 +301,20 @@ const save = (
   accessToken: string,
   refreshToken: string,
   lastVerifiedAt: Date,
-  domain: string
+  domain: string,
+  orgHero: string
 ) => {
   const storage: IStorage = {
     accessToken: accessToken,
     refreshToken: refreshToken,
     lastVerifiedAt: lastVerifiedAt.toISOString(),
     domain: domain,
+    orgHero: orgHero,
   };
   accessTokenGlobal = accessToken;
   domainGlobal = domain;
   refreshTokenGlobal = refreshToken;
+  orgHeroGlobal = orgHero;
 
   chrome.storage.sync.set(storage, () => {
     if (accessToken === "") {

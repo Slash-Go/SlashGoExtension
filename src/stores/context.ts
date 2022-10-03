@@ -5,3 +5,4 @@ export const refreshToken = writable("");
 export const lastVerifiedAt = writable("");
 export const activeRules = writable(0);
 export const domain = writable("https://api.slashgo.link");
+export const orgHero = writable("go");
