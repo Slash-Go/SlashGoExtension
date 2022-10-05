@@ -23,6 +23,8 @@ chrome.runtime.onMessage.addListener((message) => {
     stopSync().then(() => startSync());
   } else if (message.command == "run_sync") {
     runSyncCycle();
+  } else if (message.command == "get_users") {
+    getUsers();
   } else if (message.command == "logout") {
     stopSync();
     sendLogoutMessage();
@@ -195,7 +197,37 @@ const runSyncCycle = (refreshed: boolean = false) => {
           runSyncCycle(true);
         });
       } else {
-        save("", "", new Date(), domainGlobal, orgHeroGlobal);
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
+      }
+    });
+};
+
+const getUsers = (refreshed: boolean = false) => {
+  axios
+    .get(`${domainGlobal}/user`, {
+      headers: {
+        "Content-Type": `application/json`,
+        Authorization: `Bearer ${accessTokenGlobal}`,
+      },
+      adapter: fetchAdapter,
+    })
+    .then((resp) => {
+      let users = resp.data;
+      console.log(`Found ${users.length} user/s to process`);
+      chrome.runtime
+        .sendMessage({ type: "get_users_response", data: resp.data })
+        .catch(() => {
+          console.log("Nothing to receive message");
+        });
+    })
+    .catch((e: AxiosError) => {
+      console.log(e);
+      if (!refreshed && e.response.status == 401) {
+        refreshToken().then(() => {
+          getUsers(true);
+        });
+      } else {
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
       }
     });
 };
