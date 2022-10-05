@@ -11,6 +11,7 @@ import {
 let accessTokenGlobal = "",
   domainGlobal = "",
   refreshTokenGlobal = "",
+  roleGlobal = "user",
   orgHeroGlobal = "go";
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -66,13 +67,15 @@ const startSync = async () => {
     {
       accessToken: "",
       refreshToken: "",
+      role: "user",
       domain: "",
       orgHero: "go",
     } as IStorage,
-    ({ accessToken, refreshToken, domain, orgHero }: IStorage) => {
+    ({ accessToken, refreshToken, role, domain, orgHero }: IStorage) => {
       accessTokenGlobal = accessToken;
       domainGlobal = domain;
       refreshTokenGlobal = refreshToken;
+      roleGlobal = role;
       orgHeroGlobal = orgHero;
       if (domain != "" && accessToken != "") {
         chrome.alarms.create("periodic-sync", { periodInMinutes: 1 });
@@ -127,7 +130,7 @@ const createLink = async (
           createLink(shortLink, url, selectedType, isPrivate, true);
         });
       } else {
-        save("", "", new Date(), domainGlobal, orgHeroGlobal);
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
       }
     });
 };
@@ -161,7 +164,7 @@ const deleteLink = async (id: string, refreshed: boolean = false) => {
           deleteLink(id, true);
         });
       } else {
-        save("", "", new Date(), domainGlobal, orgHeroGlobal);
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
       }
     });
 };
@@ -292,6 +295,7 @@ const refreshToken = async () => {
         response.data.accessToken,
         refreshTokenGlobal,
         new Date(),
+        response.data.role,
         domainGlobal,
         response.data.orgHero
       );
@@ -302,7 +306,7 @@ const refreshToken = async () => {
     console.log("Refreshing token unsuccessful");
     if (e.response.status == 401) {
       // Logout User
-      save("", "", new Date(), domainGlobal, orgHeroGlobal);
+      save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
     }
   }
 };
@@ -311,12 +315,14 @@ const save = (
   accessToken: string,
   refreshToken: string,
   lastVerifiedAt: Date,
+  role: string,
   domain: string,
   orgHero: string
 ) => {
   const storage: IStorage = {
     accessToken: accessToken,
     refreshToken: refreshToken,
+    role: role,
     lastVerifiedAt: lastVerifiedAt.toISOString(),
     domain: domain,
     orgHero: orgHero,
@@ -324,6 +330,7 @@ const save = (
   accessTokenGlobal = accessToken;
   domainGlobal = domain;
   refreshTokenGlobal = refreshToken;
+  roleGlobal = role;
   orgHeroGlobal = orgHero;
 
   chrome.storage.sync.set(storage, () => {
