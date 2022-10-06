@@ -2,12 +2,14 @@
   import { onMount } from "svelte";
   import ListUser from "./ListUser.svelte";
   import EditUser from "./EditUser.svelte";
+  import Loader from "./Loader.svelte";
   import { currentEdit } from "src/stores/context";
 
   let users = [];
 
   let successMessage: string = null,
-    errorMessage: string = null;
+    errorMessage: string = null,
+    isLoading: boolean = false;
 
   chrome.runtime.onMessage.addListener((msg) => {
     if (
@@ -29,6 +31,7 @@
       }
     } else if (msg.type === "get_users_response") {
       users = msg.data;
+      isLoading = false;
     }
   });
 
@@ -38,6 +41,7 @@
 
   onMount(async () => {
     getUsers();
+    isLoading = true;
   });
 </script>
 
@@ -48,6 +52,9 @@
     {errorMessage}
   </div>{/if}
 <div class="overflow-x-auto p-3">
+  {#if isLoading}
+    <Loader />
+  {:else}
   <table class="table-auto w-full">
     <tbody class="text-sm divide-y divide-gray-100">
       {#each users as user}
@@ -59,4 +66,5 @@
       {/each}
     </tbody>
   </table>
+  {/if}
 </div>
