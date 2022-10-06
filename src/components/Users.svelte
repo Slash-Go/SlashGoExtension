@@ -26,7 +26,7 @@
       }
     } else if (msg.type === "get_users_response") {
       users = msg.data;
-      isLoading= false;
+      isLoading = false;
     }
   });
 
@@ -36,7 +36,7 @@
 
   onMount(async () => {
     getUsers();
-    isLoading= true;
+    isLoading = true;
   });
 </script>
 
@@ -48,7 +48,7 @@
   </div>{/if}
 <div class="overflow-x-auto p-3">
   {#if isLoading}
-    <Loader/>  
+    <Loader />
   {:else}
     <table class="table-auto w-full">
       <tbody class="text-sm divide-y divide-gray-100">
