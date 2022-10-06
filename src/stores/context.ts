@@ -6,3 +6,5 @@ export const lastVerifiedAt = writable("");
 export const role = writable("user");
 export const domain = writable("https://api.slashgo.link");
 export const orgHero = writable("go");
+
+export const currentEdit = writable("");
