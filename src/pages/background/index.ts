@@ -172,6 +172,10 @@ const deleteLink = async (id: string, refreshed: boolean = false) => {
 };
 
 const runSyncCycle = (refreshed: boolean = false) => {
+  if (domainGlobal === "") {
+    console.log("Skipping Sync Cycle because domain is not set");
+    return;
+  }
   axios
     .get(`${domainGlobal}/link`, {
       headers: {
