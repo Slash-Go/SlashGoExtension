@@ -53,7 +53,9 @@
 <div class="overflow-x-auto p-3">
   {#if isLoading}
     <Loader />
-  {:else if links.length === 0}<div>No Shortlinks created yet!</div>
+  {:else if links.length === 0}<div class="text-center">
+      No Shortlinks created yet!
+    </div>
   {:else if links.length > 0}
     <table class="table-auto w-full">
       <tbody class="text-sm divide-y divide-gray-100">
