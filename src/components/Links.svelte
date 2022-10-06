@@ -1,4 +1,6 @@
 <script lang="ts">
+  import toast, { Toaster } from "svelte-french-toast";
+
   import Delete from "./icons/Delete.svelte";
   import LockSolid from "./icons/LockSolid.svelte";
   import { orgHero } from "../stores/context";
@@ -6,23 +8,17 @@
   import Loader from "./Loader.svelte";
   let links = [];
 
-  let successMessage: string = null,
-    errorMessage: string = null,
-    isLoading: boolean = false;
+  let isLoading: boolean = false;
+  let deletingLink = [];
 
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg.type === "delete_link_response") {
+      deletingLink = deletingLink.filter((id) => id !== msg.id);
+      deletingLink = [...deletingLink];
       if (msg.status === "success") {
-        successMessage = "Deleted!";
-        setTimeout(() => {
-          successMessage = "";
-        }, 2000);
         getLinks();
       } else {
-        errorMessage = `Error: ${msg.message}`;
-        setTimeout(() => {
-          errorMessage = "";
-        }, 2000);
+        toast.error(msg.message);
       }
     } else if (msg.type === "run_sync_response") {
       links = msg.data;
@@ -44,12 +40,7 @@
   });
 </script>
 
-{#if successMessage}<div class="p-2 text-center text-green-500 font-bold">
-    {successMessage}
-  </div>{/if}
-{#if errorMessage}<div class="p-2 text-center text-red-500 font-bold">
-    {errorMessage}
-  </div>{/if}
+<Toaster />
 <div class="overflow-x-auto p-3">
   {#if isLoading}
     <Loader />
@@ -81,15 +72,19 @@
             </td>
             <td class="p-2">
               <div class="flex justify-center">
-                <button
-                  on:click={(e) => {
-                    successMessage = null;
-                    errorMessage = null;
-                    deleteLink(link.id);
-                  }}
-                >
-                  <Delete />
-                </button>
+                {#if deletingLink.includes(link.id)}
+                  <Loader />
+                {:else}
+                  <button
+                    on:click={(e) => {
+                      deletingLink.push(link.id);
+                      deletingLink = [...deletingLink];
+                      deleteLink(link.id);
+                    }}
+                  >
+                    <Delete />
+                  </button>
+                {/if}
               </div>
             </td>
           </tr>

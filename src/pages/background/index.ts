@@ -155,6 +155,7 @@ const deleteLink = async (id: string, refreshed: boolean = false) => {
       chrome.runtime.sendMessage({
         type: "delete_link_response",
         status: "success",
+        id,
       });
     })
     .catch((e: AxiosError) => {
@@ -163,6 +164,7 @@ const deleteLink = async (id: string, refreshed: boolean = false) => {
           type: "delete_link_response",
           status: "error",
           message: e.response.data["error"] as string,
+          id,
         });
         console.log("Could not delete link");
       } else if (!refreshed && e.response.status == 401) {
