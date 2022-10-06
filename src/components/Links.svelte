@@ -7,7 +7,7 @@
   let links = [];
 
   let successMessage: string = null,
-    errorMessage: string = null, 
+    errorMessage: string = null,
     isLoading: boolean = false;
 
   chrome.runtime.onMessage.addListener((msg) => {
@@ -26,7 +26,7 @@
       }
     } else if (msg.type === "run_sync_response") {
       links = msg.data;
-      isLoading= false;
+      isLoading = false;
     }
   });
 
@@ -40,7 +40,7 @@
 
   onMount(async () => {
     getLinks();
-    isLoading= true;
+    isLoading = true;
   });
 </script>
 
@@ -52,8 +52,11 @@
   </div>{/if}
 <div class="overflow-x-auto p-3">
   {#if isLoading}
-    <Loader/>  
-  {:else}
+    <Loader />
+  {:else if links.length === 0}<div class="text-center">
+      No Shortlinks created yet!
+    </div>
+  {:else if links.length > 0}
     <table class="table-auto w-full">
       <tbody class="text-sm divide-y divide-gray-100">
         {#each links as link}
@@ -93,5 +96,5 @@
         {/each}
       </tbody>
     </table>
-   {/if} 
+  {/if}
 </div>
