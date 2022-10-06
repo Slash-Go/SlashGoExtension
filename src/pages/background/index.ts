@@ -25,6 +25,10 @@ chrome.runtime.onMessage.addListener((message) => {
     runSyncCycle();
   } else if (message.command == "get_users") {
     getUsers();
+  } else if (message.command == "update_user") {
+    updateUser(message.payload);
+  } else if (message.command == "create_user") {
+    createUser(message.payload);
   } else if (message.command == "logout") {
     stopSync();
     sendLogoutMessage();
@@ -229,6 +233,90 @@ const getUsers = (refreshed: boolean = false) => {
       if (!refreshed && e.response.status == 401) {
         refreshToken().then(() => {
           getUsers(true);
+        });
+      } else {
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
+      }
+    });
+};
+
+// TODO: Remove `any`
+const updateUser = (user: any, refreshed: boolean = false) => {
+  axios
+    .patch(
+      `${domainGlobal}/user/${user.id}`,
+      {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        active: user.active,
+      },
+      {
+        headers: { Authorization: `Bearer ${accessTokenGlobal}` },
+        adapter: fetchAdapter,
+      }
+    )
+    .then((response) => {
+      if (response.status === 200) {
+        chrome.runtime.sendMessage({
+          type: "update_user_response",
+          status: "success",
+        });
+      }
+    })
+    .catch((e: AxiosError) => {
+      if (e.response.status == 400) {
+        chrome.runtime.sendMessage({
+          type: "update_user_response",
+          status: "error",
+          message: e.response.data["error"] as string,
+        });
+        console.log("Could not update user", e);
+      } else if (!refreshed && e.response.status == 401) {
+        refreshToken().then(() => {
+          updateUser(user, true);
+        });
+      } else {
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
+      }
+    });
+};
+
+const createUser = (user: any, refreshed: boolean = false) => {
+  axios
+    .post(
+      `${domainGlobal}/user/invite`,
+      {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+      },
+      {
+        headers: { Authorization: `Bearer ${accessTokenGlobal}` },
+        adapter: fetchAdapter,
+      }
+    )
+    .then((response) => {
+      if (response.status === 200) {
+        chrome.runtime.sendMessage({
+          type: "create_user_response",
+          status: "success",
+        });
+      }
+    })
+    .catch((e: AxiosError) => {
+      if (e.response.status == 400) {
+        chrome.runtime.sendMessage({
+          type: "create_user_response",
+          status: "error",
+          message: e.response.data["error"] as string,
+        });
+        console.log("Could not create user", e);
+      } else if (!refreshed && e.response.status == 401) {
+        refreshToken().then(() => {
+          createUser(user, true);
         });
       } else {
         save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
