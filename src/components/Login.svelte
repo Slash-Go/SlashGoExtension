@@ -5,6 +5,7 @@
     accessToken,
     refreshToken,
     lastVerifiedAt,
+    role,
     domain,
     orgHero,
   } from "../stores/context";
@@ -22,6 +23,7 @@
       refreshToken: $refreshToken,
       lastVerifiedAt: $lastVerifiedAt,
       domain: $domain,
+      role: $role,
       orgHero: $orgHero,
     };
 
@@ -46,6 +48,7 @@
         if (response.status === 200) {
           $accessToken = response.data.accessToken;
           $refreshToken = response.data.refreshToken;
+          $role = response.data.role;
           $orgHero = response.data.orgHero;
           $lastVerifiedAt = new Date().toISOString();
           errorMessage = "";

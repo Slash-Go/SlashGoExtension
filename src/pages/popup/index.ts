@@ -3,6 +3,7 @@ import type { IStorage } from "src/types";
 import {
   accessToken as accessTokenS,
   refreshToken as refreshTokenS,
+  role as roleS,
   domain as domainS,
   orgHero as orgHeroS,
   lastVerifiedAt as lastVerifiedAtS,
@@ -14,6 +15,7 @@ function loadApp() {
       accessToken: "",
       refreshToken: "",
       lastVerifiedAt: null,
+      role: "user",
       domain: "https://api.slashgo.link",
       orgHero: "go",
     } as IStorage,
@@ -21,12 +23,14 @@ function loadApp() {
       accessToken,
       refreshToken,
       lastVerifiedAt,
+      role,
       domain,
       orgHero,
     }: IStorage) => {
       accessTokenS.set(accessToken);
       refreshTokenS.set(refreshToken);
       lastVerifiedAtS.set(lastVerifiedAt);
+      roleS.set(role);
       domainS.set(domain);
       orgHeroS.set(orgHero);
 

@@ -11,6 +11,7 @@ import {
 let accessTokenGlobal = "",
   domainGlobal = "",
   refreshTokenGlobal = "",
+  roleGlobal = "user",
   orgHeroGlobal = "go";
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -22,6 +23,8 @@ chrome.runtime.onMessage.addListener((message) => {
     stopSync().then(() => startSync());
   } else if (message.command == "run_sync") {
     runSyncCycle();
+  } else if (message.command == "get_users") {
+    getUsers();
   } else if (message.command == "logout") {
     stopSync();
     sendLogoutMessage();
@@ -66,13 +69,15 @@ const startSync = async () => {
     {
       accessToken: "",
       refreshToken: "",
+      role: "user",
       domain: "",
       orgHero: "go",
     } as IStorage,
-    ({ accessToken, refreshToken, domain, orgHero }: IStorage) => {
+    ({ accessToken, refreshToken, role, domain, orgHero }: IStorage) => {
       accessTokenGlobal = accessToken;
       domainGlobal = domain;
       refreshTokenGlobal = refreshToken;
+      roleGlobal = role;
       orgHeroGlobal = orgHero;
       if (domain != "" && accessToken != "") {
         chrome.alarms.create("periodic-sync", { periodInMinutes: 1 });
@@ -127,7 +132,7 @@ const createLink = async (
           createLink(shortLink, url, selectedType, isPrivate, true);
         });
       } else {
-        save("", "", new Date(), domainGlobal, orgHeroGlobal);
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
       }
     });
 };
@@ -161,12 +166,16 @@ const deleteLink = async (id: string, refreshed: boolean = false) => {
           deleteLink(id, true);
         });
       } else {
-        save("", "", new Date(), domainGlobal, orgHeroGlobal);
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
       }
     });
 };
 
 const runSyncCycle = (refreshed: boolean = false) => {
+  if (domainGlobal === "") {
+    console.log("Skipping Sync Cycle because domain is not set");
+    return;
+  }
   axios
     .get(`${domainGlobal}/link`, {
       headers: {
@@ -192,7 +201,37 @@ const runSyncCycle = (refreshed: boolean = false) => {
           runSyncCycle(true);
         });
       } else {
-        save("", "", new Date(), domainGlobal, orgHeroGlobal);
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
+      }
+    });
+};
+
+const getUsers = (refreshed: boolean = false) => {
+  axios
+    .get(`${domainGlobal}/user`, {
+      headers: {
+        "Content-Type": `application/json`,
+        Authorization: `Bearer ${accessTokenGlobal}`,
+      },
+      adapter: fetchAdapter,
+    })
+    .then((resp) => {
+      let users = resp.data;
+      console.log(`Found ${users.length} user/s to process`);
+      chrome.runtime
+        .sendMessage({ type: "get_users_response", data: resp.data })
+        .catch(() => {
+          console.log("Nothing to receive message");
+        });
+    })
+    .catch((e: AxiosError) => {
+      console.log(e);
+      if (!refreshed && e.response.status == 401) {
+        refreshToken().then(() => {
+          getUsers(true);
+        });
+      } else {
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
       }
     });
 };
@@ -292,6 +331,7 @@ const refreshToken = async () => {
         response.data.accessToken,
         refreshTokenGlobal,
         new Date(),
+        response.data.role,
         domainGlobal,
         response.data.orgHero
       );
@@ -302,7 +342,7 @@ const refreshToken = async () => {
     console.log("Refreshing token unsuccessful");
     if (e.response.status == 401) {
       // Logout User
-      save("", "", new Date(), domainGlobal, orgHeroGlobal);
+      save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
     }
   }
 };
@@ -311,12 +351,14 @@ const save = (
   accessToken: string,
   refreshToken: string,
   lastVerifiedAt: Date,
+  role: string,
   domain: string,
   orgHero: string
 ) => {
   const storage: IStorage = {
     accessToken: accessToken,
     refreshToken: refreshToken,
+    role: role,
     lastVerifiedAt: lastVerifiedAt.toISOString(),
     domain: domain,
     orgHero: orgHero,
@@ -324,6 +366,7 @@ const save = (
   accessTokenGlobal = accessToken;
   domainGlobal = domain;
   refreshTokenGlobal = refreshToken;
+  roleGlobal = role;
   orgHeroGlobal = orgHero;
 
   chrome.storage.sync.set(storage, () => {
