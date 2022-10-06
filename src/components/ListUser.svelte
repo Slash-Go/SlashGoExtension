@@ -13,7 +13,9 @@
         {#if !user.active}
           <div class="w-4 mr-2"><EyeSlash /></div>
         {/if}
-        {user.firstName}&nbsp;{user.lastName}
+        {user.firstName ? user.firstName : ""}&nbsp;{user.lastName
+          ? user.lastName
+          : ""}
       </div>
     </div>
     <div class="flex">

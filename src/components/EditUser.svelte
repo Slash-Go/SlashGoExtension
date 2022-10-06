@@ -1,5 +1,5 @@
 <script type="ts">
-  import { currentEdit, role } from "../stores/context";
+  import { currentEdit, role, currentCreate } from "../stores/context";
   import RotateLeft from "./icons/RotateLeft.svelte";
   import Save from "./icons/Save.svelte";
   export let user: any = {};
@@ -61,7 +61,7 @@
       <button
         class="p-2"
         on:click={() => {
-          $currentEdit = "";
+          createMode ? ($currentCreate = false) : ($currentEdit = "");
         }}
       >
         <RotateLeft size="18px" />

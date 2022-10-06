@@ -286,13 +286,12 @@ const updateUser = (user: any, refreshed: boolean = false) => {
 const createUser = (user: any, refreshed: boolean = false) => {
   axios
     .post(
-      `${domainGlobal}/user`,
+      `${domainGlobal}/user/invite`,
       {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         role: user.role,
-        active: user.active,
       },
       {
         headers: { Authorization: `Bearer ${accessTokenGlobal}` },
