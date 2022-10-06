@@ -1,0 +1,206 @@
+diff --git a/src/components/Links.svelte b/src/components/Links.svelte
+index a1573c6..e54a8d0 100644
+--- a/src/components/Links.svelte
++++ b/src/components/Links.svelte
+@@ -3,29 +3,28 @@
+   import LockSolid from "./icons/LockSolid.svelte";
+   import { orgHero } from "../stores/context";
+   import { onMount } from "svelte";
+-    import App from "./App.svelte";
+-  import Loader from "./Loader.svelte";
++
+   let links = [];
+ 
+   let successMessage: string = null,
+-    errorMessage: string = null,
+-    isLoading: boolean = false;
++    errorMessage: string = null;
+ 
+   chrome.runtime.onMessage.addListener((msg) => {
+     if (msg.type === "delete_link_response") {
+       if (msg.status === "success") {
+         successMessage = "Deleted!";
++        setTimeout(() => {
++          successMessage = "";
++        }, 2000);
+         getLinks();
+       } else {
+         errorMessage = `Error: ${msg.message}`;
++        setTimeout(() => {
++          errorMessage = "";
++        }, 2000);
+       }
+-      setTimeout(() => {
+-        successMessage = "";
+-        errorMessage = "";
+-      }, 2000);
+     } else if (msg.type === "run_sync_response") {
+       links = msg.data;
+-      isLoading = false;
+     }
+   });
+ 
+@@ -38,7 +37,6 @@
+   };
+ 
+   onMount(async () => {
+-    isLoading = true;
+     getLinks();
+   });
+ </script>
+@@ -50,9 +48,6 @@
+     {errorMessage}
+   </div>{/if}
+ <div class="overflow-x-auto p-3">
+-  {#if isLoading}
+-    <Loader/>
+-  {:else}  
+   <table class="table-auto w-full">
+     <tbody class="text-sm divide-y divide-gray-100">
+       {#each links as link}
+@@ -92,5 +87,4 @@
+       {/each}
+     </tbody>
+   </table>
+-  {/if}
+ </div>
+diff --git a/src/components/Loader.svelte b/src/components/Loader.svelte
+deleted file mode 100644
+index 557ca64..0000000
+--- a/src/components/Loader.svelte
++++ /dev/null
+@@ -1,6 +0,0 @@
+-<div aria-label="Loading..." role="status" class="m-auto w-5">
+-    <svg class="animate-spin" viewBox="3 3 18 18">
+-      <path class="fill-red-200" d="M12 5C8.13401 5 5 8.13401 5 12c0 3.866 3.13401 7 7 7 3.866.0 7-3.134 7-7 0-3.86599-3.134-7-7-7zM3 12c0-4.97056 4.02944-9 9-9 4.9706.0 9 4.02944 9 9 0 4.9706-4.0294 9-9 9-4.97056.0-9-4.0294-9-9z"></path>
+-      <path class="fill-red-800" d="M16.9497 7.05015c-2.7336-2.73367-7.16578-2.73367-9.89945.0-.39052.39052-1.02369.39052-1.41421.0-.39053-.39053-.39053-1.02369.0-1.41422 3.51472-3.51472 9.21316-3.51472 12.72796.0C18.7545 6.02646 18.7545 6.65962 18.364 7.05015c-.390599999999999.39052-1.0237.39052-1.4143.0z"></path>
+-    </svg>
+-  </div>
+\ No newline at end of file
+diff --git a/src/components/Users.svelte b/src/components/Users.svelte
+index 7eb6bd2..bb721f8 100644
+--- a/src/components/Users.svelte
++++ b/src/components/Users.svelte
+@@ -2,12 +2,10 @@
+   import { onMount } from "svelte";
+   import Edit from "./icons/Edit.svelte";
+   import EyeSlash from "./icons/EyeSlash.svelte";
+-  import Loader from "./Loader.svelte";
+ 
+   let users = [];
+ 
+   let successMessage: string = null,
+-    isLoading: boolean = false,
+     errorMessage: string = null;
+ 
+   chrome.runtime.onMessage.addListener((msg) => {
+@@ -26,7 +24,6 @@
+       }
+     } else if (msg.type === "get_users_response") {
+       users = msg.data;
+-      isLoading = false;
+     }
+   });
+ 
+@@ -35,7 +32,6 @@
+   };
+ 
+   onMount(async () => {
+-    isLoading= true;
+     getUsers();
+   });
+ </script>
+@@ -46,51 +42,45 @@
+ {#if errorMessage}<div class="p-2 text-center text-red-500 font-bold">
+     {errorMessage}
+   </div>{/if}
+-  <div class="overflow-x-auto p-3">
+-    {#if isLoading}
+-      <Loader/>
+-    {:else}
+-      <table class="table-auto w-full">
+-        <tbody class="text-sm divide-y divide-gray-100">
+-          {#each users as user}
+-            <tr>
+-              <td class="p-2">
+-                <div class="font-bold text-gray-800 text-lg text-ellipsis flex">
+-                  <div class="flex items-center">
+-                    {#if !user.active}
+-                      <div class="w-4 mr-2"><EyeSlash /></div>
+-                    {/if}
+-                    {user.firstName}&nbsp;{user.lastName}
+-                  </div>
+-                </div>
+-                <div class="flex">
+-                  <div class="text-right text-xs ">{user.email} |&nbsp;</div>
+-                  <div
+-                    class="text-left text-xs text-red-400 overflow-hidden truncate w-60"
+-                  >
+-                    {user.role}
+-                  </div>
+-                </div>
+-              </td>
+-              <td>
+-                <div class="flex justify-center">
+-                  <button
+-                    class="p-2"
+-                    on:click={(e) => {
+-                      successMessage = null;
+-                      errorMessage = null;
+-                      //deleteLink(link.id);
+-                    }}
+-                  >
+-                    <Edit />
+-                  </button>
+-                </div>
+-              </td>
+-            </tr>
+-          {/each}
+-        </tbody>
+-      </table>
+-    {/if}
+-  </div>
+-
+-
++<div class="overflow-x-auto p-3">
++  <table class="table-auto w-full">
++    <tbody class="text-sm divide-y divide-gray-100">
++      {#each users as user}
++        <tr>
++          <td class="p-2">
++            <div class="font-bold text-gray-800 text-lg text-ellipsis flex">
++              <div class="flex items-center">
++                {#if !user.active}
++                  <div class="w-4 mr-2"><EyeSlash /></div>
++                {/if}
++                {user.firstName}&nbsp;{user.lastName}
++              </div>
++            </div>
++            <div class="flex">
++              <div class="text-right text-xs ">{user.email} |&nbsp;</div>
++              <div
++                class="text-left text-xs text-red-400 overflow-hidden truncate w-60"
++              >
++                {user.role}
++              </div>
++            </div>
++          </td>
++          <td>
++            <div class="flex justify-center">
++              <button
++                class="p-2"
++                on:click={(e) => {
++                  successMessage = null;
++                  errorMessage = null;
++                  //deleteLink(link.id);
++                }}
++              >
++                <Edit />
++              </button>
++            </div>
++          </td>
++        </tr>
++      {/each}
++    </tbody>
++  </table>
++</div>
