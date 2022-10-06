@@ -6,3 +6,5 @@ export type IStorage = {
   domain: string;
   orgHero: string;
 };
+
+export type choices = "links" | "settings" | "users";

@@ -1,6 +1,8 @@
 <script lang="ts">
   import { accessToken, refreshToken, role, orgHero } from "../stores/context";
+  import type { choices } from "../types";
   import Links from "./Links.svelte";
+  import LinkHeader from "./micro/LinkHeader.svelte";
   import Settings from "./Settings.svelte";
   import Users from "./Users.svelte";
 
@@ -12,7 +14,11 @@
     });
   };
 
-  let choice = "links";
+  let choice: choices = "links";
+
+  const updateChoice = (val: choices) => {
+    choice = val;
+  };
 </script>
 
 <svelte:head>
@@ -21,37 +27,32 @@
 
 <div>
   <section class="antialiased bg-gray-100 text-gray-600 h-screen px-4">
-    <div class="flex flex-col justify-center h-full">
+    <div class="pt-32">
       <div
-        class="w-full max-w-xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200"
+        class="w-full max-w-xl mx-auto bg-white rounded-sm border border-gray-200"
       >
-        <header class="px-5 py-4 border-b border-gray-100">
-          <div class="flex font-semibold text-gray-800">
-            <div
-              class={choice === "links"
-                ? "text-red-500 underline underline-offset-4 pr-4"
-                : "hover:text-red-600 hover:cursor-pointer pr-4"}
-              on:click={() => (choice = `links`)}
-            >
-              Configured Shortlinks
-            </div>
+        <header class="border-b border-gray-100">
+          <div class="flex items-center font-semibold text-gray-800">
+            <LinkHeader
+              value="links"
+              label="Shortlinks"
+              {choice}
+              {updateChoice}
+            />
             {#if $role === "admin" || $role === "global_admin"}
-              <div
-                class={choice === "users"
-                  ? "text-red-600 underline underline-offset-4 pr-4"
-                  : "hover:text-red-600 hover:cursor-pointer pr-4"}
-                on:click={() => (choice = `users`)}
-              >
-                Manage Users
-              </div>
-              <div
-                class={choice === "settings"
-                  ? "text-red-600 underline underline-offset-4 pr-4"
-                  : "hover:text-red-600 hover:cursor-pointer pr-4"}
-                on:click={() => (choice = `settings`)}
-              >
-                Org Settings
-              </div>
+              <LinkHeader
+                value="users"
+                label="Manage Users"
+                {choice}
+                {updateChoice}
+              />
+
+              <LinkHeader
+                value="settings"
+                label="Org Settings"
+                {choice}
+                {updateChoice}
+              />
             {/if}
           </div>
         </header>
