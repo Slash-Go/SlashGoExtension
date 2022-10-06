@@ -63,11 +63,11 @@
           <Settings />
         {/if}
       </div>
-      <div
-        class="text-center p-2 text-red-400 hover:text-red-600 font-bold underline underline-offset-4 text-sm"
-      >
-        <a on:click={() => logout()} href="#logout">Logout</a>
-      </div>
     </div>
+    <a
+      class="p-4 right-0 text-gray-600 hover:text-gray-800 hover:underline font-bold mt-4 fixed bottom-0 text-xs"
+      on:click={() => logout()}
+      href="#logout">Sign Out</a
+    >
   </section>
 </div>
