@@ -4,7 +4,20 @@
   import { orgHero } from "../stores/context";
   import { onMount } from "svelte";
   import Loader from "./Loader.svelte";
+
+  let searchTermInput: HTMLInputElement;
+  let searchTerm: string = "";
+
   let links = [];
+  $: filteredLinks = links.filter((item) => {
+    if (searchTerm === "") return true;
+    const searchQuery = searchTerm.toLowerCase();
+    return (
+      item.shortLink.toLowerCase().includes(searchQuery) ||
+      item.fullUrl.toLowerCase().includes(searchQuery) ||
+      item.type.toLowerCase().includes(searchQuery)
+    );
+  });
 
   let successMessage: string = null,
     errorMessage: string = null,
@@ -27,6 +40,9 @@
     } else if (msg.type === "run_sync_response") {
       links = msg.data;
       isLoading = false;
+      requestAnimationFrame(() => {
+        searchTermInput.focus();
+      });
     }
   });
 
@@ -50,16 +66,25 @@
 {#if errorMessage}<div class="p-2 text-center text-red-500 font-bold">
     {errorMessage}
   </div>{/if}
-<div class="overflow-x-auto p-3">
+<div class="overflow-x-auto p-3 max-h-[60vh] ">
   {#if isLoading}
     <Loader />
   {:else if links.length === 0}<div class="text-center">
       No Shortlinks created yet!
     </div>
   {:else if links.length > 0}
+    <div class="flex justify-center">
+      <input
+        bind:this={searchTermInput}
+        bind:value={searchTerm}
+        type="text"
+        class="text-lg text-slate-600 w-2/3 text-center pt-2 pb-2 border border-slate-300 rounded-md outline-slate-300 "
+        placeholder="search shortlink"
+      />
+    </div>
     <table class="table-auto w-full">
       <tbody class="text-sm divide-y divide-gray-100">
-        {#each links as link}
+        {#each filteredLinks as link}
           <tr>
             <td class="p-2">
               <div class="font-bold text-gray-800 text-lg text-ellipsis">
