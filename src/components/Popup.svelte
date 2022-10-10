@@ -37,6 +37,7 @@
   let shortLink: string = "",
     isPrivate: boolean = false;
   let selectedType: string = `static`;
+  let description: string = "";
   let dynamicUrl: string = "";
 
   const privatePath = `my/`;
@@ -51,7 +52,7 @@
 
     chrome.runtime.sendMessage({
       command: "create_link",
-      data: { url, shortLink, selectedType, isPrivate },
+      data: { url, shortLink, description, selectedType, isPrivate },
     });
   };
 
@@ -106,6 +107,14 @@
             </div>
           </div>
 
+          <div class="flex justify-center">
+            <input
+              bind:value={description}
+              type="text"
+              class="w-full rounded text-sm text-slate-500 mt-1 mb-1 p-2 border border-slate-300 text-left"
+              placeholder="description (optional)"
+            />
+          </div>
           <div class="flex justify-center">
             <div
               class="ease-in p-2 rounded select-none {selectedType == `static`

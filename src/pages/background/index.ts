@@ -36,6 +36,7 @@ chrome.runtime.onMessage.addListener((message) => {
     createLink(
       message.data.shortLink,
       message.data.url,
+      message.data.description,
       message.data.selectedType,
       message.data.isPrivate
     );
@@ -96,6 +97,7 @@ const startSync = async () => {
 const createLink = async (
   shortLink: string,
   url: string,
+  description: string,
   selectedType: string,
   isPrivate: boolean,
   refreshed: boolean = false
@@ -106,6 +108,7 @@ const createLink = async (
       {
         shortLink: shortLink,
         fullUrl: url,
+        description: description,
         type: selectedType,
         private: isPrivate,
       },
@@ -133,7 +136,14 @@ const createLink = async (
         console.log("Could not create link", e);
       } else if (!refreshed && e.response.status == 401) {
         refreshToken().then(() => {
-          createLink(shortLink, url, selectedType, isPrivate, true);
+          createLink(
+            shortLink,
+            url,
+            description,
+            selectedType,
+            isPrivate,
+            true
+          );
         });
       } else {
         save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);

@@ -95,7 +95,10 @@
                 <div class="font-bold text-gray-800 text-lg text-ellipsis">
                   {$orgHero}/{#if link.private}my/{/if}{link.shortLink}
                 </div>
-                <div class="flex">
+                <div class="flex flex-wrap ">
+                  <div class="flex w-full">
+                    <div class="w-100 pt-2 pb-1 text-gray-400 text-left overflow-hidden truncate text-xs">{link.description}</div>
+                  </div>
                   <div class="text-right text-xs ">{link.type} |&nbsp;</div>
                   <div
                     class="text-left text-xs text-red-400 overflow-hidden truncate w-60"
