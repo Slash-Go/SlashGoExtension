@@ -116,6 +116,9 @@
               {/if}
             </div>
           </div>
+          <div class="pt-1 pb-1 w-full text-center text-xs text-slate-400">
+            <b>Tip:</b> The best shortlinks are short and memorable
+          </div>
 
           <div class="flex justify-center">
             <input
