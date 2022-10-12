@@ -41,7 +41,7 @@
       links = msg.data;
       isLoading = false;
       requestAnimationFrame(() => {
-        searchTermInput.focus();
+        if (searchTermInput) searchTermInput.focus();
       });
     }
   });
@@ -66,7 +66,7 @@
 {#if errorMessage}<div class="p-2 text-center text-red-500 font-bold">
     {errorMessage}
   </div>{/if}
-<div class="overflow-x-auto p-3 max-h-[60vh] ">
+<div class="overflow-x-auto p-3">
   {#if isLoading}
     <Loader />
   {:else if links.length === 0}<div class="text-center">
@@ -97,7 +97,11 @@
                 </div>
                 <div class="flex flex-wrap ">
                   <div class="flex w-full">
-                    <div class="w-100 pt-2 pb-1 text-gray-400 text-left overflow-hidden truncate text-xs">{link.description}</div>
+                    <div
+                      class="w-100 pt-2 pb-1 text-gray-400 text-left overflow-hidden truncate text-xs"
+                    >
+                      {link.description}
+                    </div>
                   </div>
                   <div class="text-right text-xs ">{link.type} |&nbsp;</div>
                   <div

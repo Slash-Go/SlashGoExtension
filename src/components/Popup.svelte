@@ -4,17 +4,17 @@
   import LockOpenSolid from "./icons/LockOpenSolid.svelte";
   import LockSolid from "./icons/LockSolid.svelte";
 
-  const doesNotContainSpace = (text) => {
+  const doesNotContainSpace = (text: string) => {
     if (!text.includes(" ")) return true;
     return false;
   };
 
-  const hasValidLength = (text) => {
+  const hasValidLength = (text: string) => {
     if (text.length >= 1) return true;
     return false;
   };
 
-  const isValidShortLink = (text) => {
+  const isValidShortLink = (text: string) => {
     return hasValidLength(text) && doesNotContainSpace(text);
   };
 
@@ -43,7 +43,7 @@
   const privatePath = `my/`;
   $: displayPath = isPrivate ? `${$orgHero}/${privatePath}` : `${$orgHero}/`;
 
-  let shortLinkInput;
+  let shortLinkInput: HTMLInputElement;
 
   const createLink = async (url: string) => {
     isCreatingShortLink = true;
@@ -79,7 +79,7 @@
   });
 </script>
 
-<section class="antialiased bg-gray-100 text-gray-600 h-screen px-4">
+<section class="antialiased bg-gray-100 text-gray-600 px-4">
   <div class="flex flex-col justify-center h-full">
     <div
       on:click={() => openOptions()}
@@ -156,7 +156,7 @@
               <input
                 bind:value={dynamicUrl}
                 type="input"
-                class="w-full text-lg text-slate-600 rounded mt-1 mb-1 pl-2 border border-slate-300 text-left"
+                class="w-full text-sm p-2  text-slate-600 rounded mt-1 mb-1 pl-2 border border-slate-300 text-left"
                 placeholder="shortlink"
               />
             </div>
