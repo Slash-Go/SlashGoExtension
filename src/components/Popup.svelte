@@ -63,6 +63,10 @@
     });
   };
 
+  const openOptions = () => {
+    chrome.runtime.openOptionsPage();
+  };
+
   $: submit = async () => {
     chrome.tabs.query({ active: true }, (tabs) => {
       console.info(`creating shortlink for ${tabs[0].url}`);
@@ -77,6 +81,12 @@
 
 <section class="antialiased bg-gray-100 text-gray-600 h-screen px-4">
   <div class="flex flex-col justify-center h-full">
+    <div
+      on:click={() => openOptions()}
+      class="text-right cursor-pointer select-none text-xs text-red-500 hover:text-red-600 underline underline-offset-3 pt-2 pr-2"
+    >
+      View Links
+    </div>
     <div class="main bg-slate-100">
       <div class="p-2">
         <form on:submit|preventDefault={submit}>
