@@ -20,10 +20,14 @@ export default defineConfig({
         content: resolve(pagesDir, "content", "index.ts"),
         options: resolve(pagesDir, "options", "index.html"),
         popup: resolve(pagesDir, "popup", "index.html"),
+        welcome: resolve(pagesDir, "welcome", "index.html"),
       },
       output: {
         entryFileNames: (chunk) => `src/pages/${chunk.name}/index.js`,
       },
     },
+  },
+  optimizeDeps: {
+    include: ["lodash.get", "lodash.isequal", "lodash.clonedeep"],
   },
 });

@@ -65,7 +65,7 @@
         {/if}
       </div>
       <div
-        class="text-center p-2 text-red-400 hover:text-red-600 font-bold underline underline-offset-4 text-sm"
+        class="text-center p-2 text-red-300 hover:text-red-500 font-bold text-xs"
       >
         <a on:click={() => logout()} href="#logout">Logout</a>
       </div>

@@ -18,6 +18,17 @@ chrome.runtime.onInstalled.addListener(() => {
   stopSync().then(() => startSync());
 });
 
+chrome.runtime.onInstalled.addListener(function (object) {
+  chrome.tabs.create(
+    {
+      url: `chrome-extension://${chrome.runtime.id}/src/pages/welcome/index.html`,
+    },
+    () => {
+      console.log("welcome page opened");
+    }
+  );
+});
+
 chrome.runtime.onMessage.addListener((message) => {
   if (message.command == "start_sync") {
     stopSync().then(() => startSync());
@@ -29,6 +40,12 @@ chrome.runtime.onMessage.addListener((message) => {
     updateUser(message.payload);
   } else if (message.command == "create_user") {
     createUser(message.payload);
+  } else if (message.command == "get_org_details") {
+    getOrgDetails();
+  } else if (message.command == "update_hero") {
+    updateOrgHero(message.payload);
+  } else if (message.command == "update_org_details") {
+    updateOrgDetails(message.payload);
   } else if (message.command == "logout") {
     stopSync();
     sendLogoutMessage();
@@ -250,6 +267,34 @@ const getUsers = (refreshed: boolean = false) => {
     });
 };
 
+const getOrgDetails = (refreshed: boolean = false) => {
+  axios
+    .get(`${domainGlobal}/org`, {
+      headers: {
+        "Content-Type": `application/json`,
+        Authorization: `Bearer ${accessTokenGlobal}`,
+      },
+      adapter: fetchAdapter,
+    })
+    .then((resp) => {
+      chrome.runtime
+        .sendMessage({ type: "get_org_details_response", data: resp.data })
+        .catch(() => {
+          console.log("Nothing to receive message");
+        });
+    })
+    .catch((e: AxiosError) => {
+      console.log(e);
+      if (!refreshed && e.response.status == 401) {
+        refreshToken().then(() => {
+          getOrgDetails(true);
+        });
+      } else {
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
+      }
+    });
+};
+
 // TODO: Remove `any`
 const updateUser = (user: any, refreshed: boolean = false) => {
   axios
@@ -286,6 +331,44 @@ const updateUser = (user: any, refreshed: boolean = false) => {
       } else if (!refreshed && e.response.status == 401) {
         refreshToken().then(() => {
           updateUser(user, true);
+        });
+      } else {
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
+      }
+    });
+};
+
+const updateOrgDetails = (org: any, refreshed: boolean = false) => {
+  axios
+    .patch(
+      `${domainGlobal}/org/${org.orgId}`,
+      {
+        orgHero: org.orgHero,
+      },
+      {
+        headers: { Authorization: `Bearer ${accessTokenGlobal}` },
+        adapter: fetchAdapter,
+      }
+    )
+    .then((response) => {
+      if (response.status === 200) {
+        chrome.runtime.sendMessage({
+          type: "update_org_details_response",
+          status: "success",
+        });
+      }
+    })
+    .catch((e: AxiosError) => {
+      if (e.response.status == 400) {
+        chrome.runtime.sendMessage({
+          type: "update_org_details_response",
+          status: "error",
+          message: e.response.data["error"] as string,
+        });
+        console.log("Could not update user", e);
+      } else if (!refreshed && e.response.status == 401) {
+        refreshToken().then(() => {
+          updateOrgDetails(org, true);
         });
       } else {
         save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
@@ -443,6 +526,13 @@ const refreshToken = async () => {
       save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
     }
   }
+};
+
+const updateOrgHero = (orgHero: string) => {
+  orgHeroGlobal = orgHero;
+  chrome.storage.sync.set({ orgHero }, () => {
+    runSyncCycle();
+  });
 };
 
 const save = (
