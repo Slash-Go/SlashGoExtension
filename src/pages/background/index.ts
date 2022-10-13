@@ -18,6 +18,17 @@ chrome.runtime.onInstalled.addListener(() => {
   stopSync().then(() => startSync());
 });
 
+chrome.runtime.onInstalled.addListener(function (object) {
+  chrome.tabs.create(
+    {
+      url: `chrome-extension://${chrome.runtime.id}/src/pages/welcome/index.html`,
+    },
+    () => {
+      console.log("welcome page opened");
+    }
+  );
+});
+
 chrome.runtime.onMessage.addListener((message) => {
   if (message.command == "start_sync") {
     stopSync().then(() => startSync());
