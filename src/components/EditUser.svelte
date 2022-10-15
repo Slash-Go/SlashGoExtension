@@ -22,14 +22,14 @@
           type="text"
           placeholder="First Name"
           bind:value={user.firstName}
-          class="w-48 text-slate-500 mt-1 mb-1 pl-1 border border-slate-300 text-left"
+          class="w-48 text-slate-500 mt-1 mb-1 pl-1 border border-slate-300 rounded-md text-left"
         />
         &nbsp;&nbsp;
         <input
           type="text"
           placeholder="Last Name"
           bind:value={user.lastName}
-          class="w-48 text-slate-500 mt-1 mb-1 pl-1 border border-slate-300 text-left"
+          class="w-48 text-slate-500 mt-1 mb-1 pl-1 border border-slate-300 rounded-md text-left"
         />
       </div>
     </div>
@@ -39,13 +39,13 @@
           type="email"
           placeholder="Email"
           bind:value={user.email}
-          class="mt-1 mb-1 pl-1 border border-slate-300 text-left"
+          class="mt-1 mb-1 pl-1 border border-slate-300 rounded-md text-left"
         /> |&nbsp;
       </div>
       <div class="text-left text-xs text-red-400 overflow-hidden truncate w-60">
         <select
           bind:value={user.role}
-          class="bg-gray-50 border border-gray-300 text-gray-900 mt-1 mb-1"
+          class="bg-gray-50 border border-gray-300 text-gray-900 rounded-md mt-1 mb-1"
         >
           <option value="user">user</option>
           <option value="admin">admin</option>

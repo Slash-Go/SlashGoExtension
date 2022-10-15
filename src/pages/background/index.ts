@@ -61,9 +61,9 @@ chrome.runtime.onMessage.addListener((message) => {
     updateLink(
       message.payload.id,
       message.payload.shortLink,
-      message.payload.url,
+      message.payload.fullUrl,
       message.payload.description,
-      message.payload.selectedType,
+      message.payload.type,
       message.payload.isPrivate
     );
   } else if (message.command == "delete_link") {
