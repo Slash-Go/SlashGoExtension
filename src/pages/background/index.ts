@@ -57,6 +57,15 @@ chrome.runtime.onMessage.addListener((message) => {
       message.data.selectedType,
       message.data.isPrivate
     );
+  } else if (message.command == "update_link") {
+    updateLink(
+      message.payload.id,
+      message.payload.shortLink,
+      message.payload.url,
+      message.payload.description,
+      message.payload.selectedType,
+      message.payload.isPrivate
+    );
   } else if (message.command == "delete_link") {
     deleteLink(message.data.id);
   }
@@ -331,6 +340,64 @@ const updateUser = (user: any, refreshed: boolean = false) => {
       } else if (!refreshed && e.response.status == 401) {
         refreshToken().then(() => {
           updateUser(user, true);
+        });
+      } else {
+        save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
+      }
+    });
+};
+
+const updateLink = (
+  id: string,
+  shortLink: string,
+  fullUrl: string,
+  description: string,
+  type: string,
+  isPrivate: boolean,
+  refreshed: boolean = false
+) => {
+  axios
+    .patch(
+      `${domainGlobal}/link/${id}`,
+      {
+        shortLink: shortLink,
+        fullUrl: fullUrl,
+        description: description,
+        type: type,
+        private: isPrivate,
+      },
+      {
+        headers: { Authorization: `Bearer ${accessTokenGlobal}` },
+        adapter: fetchAdapter,
+      }
+    )
+    .then((response) => {
+      if (response.status === 200) {
+        chrome.runtime.sendMessage({
+          type: "update_link_response",
+          status: "success",
+        });
+      }
+    })
+    .catch((e: AxiosError) => {
+      if (e.response.status == 400) {
+        chrome.runtime.sendMessage({
+          type: "update_link_response",
+          status: "error",
+          message: e.response.data["error"] as string,
+        });
+        console.log("Could not update user", e);
+      } else if (!refreshed && e.response.status == 401) {
+        refreshToken().then(() => {
+          updateLink(
+            id,
+            shortLink,
+            fullUrl,
+            description,
+            type,
+            isPrivate,
+            true
+          );
         });
       } else {
         save("", "", new Date(), "user", domainGlobal, orgHeroGlobal);
