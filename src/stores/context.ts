@@ -9,3 +9,4 @@ export const orgHero = writable("go");
 
 export const currentEdit = writable("");
 export const currentCreate = writable(false);
+export const currentLinkEdit = writable("");
