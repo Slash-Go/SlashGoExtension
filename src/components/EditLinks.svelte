@@ -18,7 +18,7 @@
           type="text"
           placeholder="Short Link"
           bind:value={link.shortLink}
-          class="w-70 text-slate-500 mt-1 mb-1 pl-1 border border-slate-300 text-left"
+          class="w-70 text-slate-500 mt-1 mb-1 pl-1 border border-slate-300 rounded-md text-left"
         />
         &nbsp;&nbsp;
       </div>
@@ -28,7 +28,7 @@
         type="text"
         placeholder="Description"
         bind:value={link.description}
-        class="w-70 text-slate-500 mt-1 mb-1 pl-1 border border-slate-300 text-left"
+        class="w-70 text-slate-500 mt-1 mb-1 pl-1 border border-slate-300 rounded-md text-left"
       />
     </div>
     <div class="flex">
@@ -37,7 +37,7 @@
       >
         <select
           bind:value={link.type}
-          class="bg-gray-50 border border-gray-300 text-gray-900 mt-1 mb-1"
+          class="bg-gray-50 border border-gray-300 text-gray-900 mt-1 mb-1 rounded-md"
         >
           <option value="static">static</option>
           <option value="dynamic">dynamic</option>
@@ -48,7 +48,7 @@
           type="text"
           placeholder="Url"
           bind:value={link.fullUrl}
-          class="w-48 text-slate-500 mt-1 mb-1 pl-1 border border-slate-300 text-left"
+          class="w-48 text-slate-500 mt-1 mb-1 pl-1 border border-slate-300 rounded-md text-left "
         />
       </div>
     </div>
