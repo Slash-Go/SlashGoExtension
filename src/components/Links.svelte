@@ -138,9 +138,7 @@
                     <button
                       class="p-2"
                       on:click={() => {
-                        console.log("edit");
                         $currentLinkEdit = link.id;
-                        //updateLink(link.id);
                       }}
                     >
                       <Edit />

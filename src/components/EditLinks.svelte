@@ -67,7 +67,6 @@
       <button
         class="p-2"
         on:click={() => {
-          //link.id = $currentLinkEdit;
           updateLink(link);
         }}
       >

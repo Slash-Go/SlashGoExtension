@@ -7,10 +7,22 @@
 
   let users = [];
 
+  let searchTermInput: HTMLInputElement;
+  let searchTerm: string = "";
+
   let successMessage: string = null,
     errorMessage: string = null,
     isLoading: boolean = false;
 
+  $: filteredUsers = users.filter((item) => {
+    if (searchTerm === "") return true;
+    const searchQuery = searchTerm.toLowerCase();
+    return (
+      item.email.toLowerCase().includes(searchQuery) ||
+      item.firstName.toLowerCase().includes(searchQuery) ||
+      item.lastName.toLowerCase().includes(searchQuery)
+    );
+  });
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg.type === "update_user_response") {
       if (msg.status === "success") {
@@ -43,6 +55,9 @@
     } else if (msg.type === "get_users_response") {
       users = msg.data;
       isLoading = false;
+      requestAnimationFrame(() => {
+        if (searchTermInput) searchTermInput.focus();
+      });
     }
   });
 
@@ -71,6 +86,15 @@
   {#if isLoading}
     <Loader />
   {:else}
+    <div class="flex justify-center">
+      <input
+        bind:this={searchTermInput}
+        bind:value={searchTerm}
+        type="text"
+        class="text-xs text-slate-600 w-2/3 text-center pt-2 pb-2 border border-slate-300 rounded-md outline-slate-300 "
+        placeholder="search users"
+      />
+    </div>
     <div>
       <button
         on:click={() => ($currentCreate = !$currentCreate)}
@@ -84,13 +108,17 @@
         {#if $currentCreate}
           <EditUser createMode={true} />
         {/if}
-        {#each users as user}
-          {#if $currentEdit != user.id}
-            <ListUser {user} />
-          {:else}
-            <EditUser {user} />
-          {/if}
-        {/each}
+        {#if filteredUsers.length === 0}
+          <div class="text-center text-xs italic py-3.5">No users found!</div>
+        {:else}
+          {#each filteredUsers as user}
+            {#if $currentEdit != user.id}
+              <ListUser {user} />
+            {:else}
+              <EditUser {user} />
+            {/if}
+          {/each}
+        {/if}
       </tbody>
     </table>
   {/if}
