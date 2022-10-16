@@ -1,7 +1,7 @@
 <script>
   export let size = "24";
   export let color = "currentColor";
-  export let ariaLabel = "delete";
+  export let ariaLabel = "discard";
 </script>
 
 <svg

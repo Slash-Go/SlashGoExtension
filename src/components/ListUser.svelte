@@ -1,5 +1,5 @@
 <script type="ts">
-  import { currentEdit } from "src/stores/context";
+  import { currentUserBeingEdited } from "src/stores/context";
   import Edit from "./icons/Edit.svelte";
   import EyeSlash from "./icons/EyeSlash.svelte";
   import Hourglass from "./icons/Hourglass.svelte";
@@ -9,8 +9,8 @@
 
 <tr>
   <td class="p-2">
-    <div class="font-bold text-gray-800 text-lg text-ellipsis flex">
-      <div class="flex items-center">
+    <div class="font-bold text-gray-800 text-base text-ellipsis flex">
+      <div class="flex items-center text-base">
         {#if user.status == "deactivated"}
           <div class="w-4 text-red-400">
             <EyeSlash size="10" fill="currentColor" />
@@ -37,11 +37,14 @@
       <button
         class="p-2"
         on:click={() => {
-          $currentEdit = user.id;
+          $currentUserBeingEdited = user.id;
         }}
       >
         <Edit />
       </button>
+      {#if !user.status}
+        <div class="m-2 pt-1 w-4"><EyeSlash /></div>
+      {/if}
     </div>
   </td>
 </tr>

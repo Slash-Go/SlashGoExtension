@@ -1,5 +1,9 @@
 <script type="ts">
-  import { currentEdit, role, currentCreate } from "../stores/context";
+  import {
+    currentUserBeingEdited,
+    role,
+    currentCreate,
+  } from "../stores/context";
   import RotateLeft from "./icons/RotateLeft.svelte";
   import Save from "./icons/Save.svelte";
   export let user: any = {};
@@ -16,7 +20,7 @@
 
 <tr>
   <td class="p-2">
-    <div class="font-bold text-gray-800 text-lg text-ellipsis flex">
+    <div class="font-bold text-gray-800 text-base text-ellipsis flex">
       <div class="flex items-center">
         <input
           type="text"
@@ -39,13 +43,13 @@
           type="email"
           placeholder="Email"
           bind:value={user.email}
-          class="mt-1 mb-1 pl-1 border border-slate-300 rounded-md text-left"
+          class="mt-1 mb-1 p-1 border border-slate-300 rounded text-left"
         /> |&nbsp;
       </div>
       <div class="text-left text-xs text-red-400 overflow-hidden truncate w-60">
         <select
           bind:value={user.role}
-          class="bg-gray-50 border border-gray-300 text-gray-900 rounded-md mt-1 mb-1"
+          class="bg-gray-50 border border-gray-300 text-gray-900 rounded mt-1 mb-1 p-1"
         >
           <option value="user">user</option>
           <option value="admin">admin</option>
@@ -61,7 +65,9 @@
       <button
         class="p-2"
         on:click={() => {
-          createMode ? ($currentCreate = false) : ($currentEdit = "");
+          createMode
+            ? ($currentCreate = false)
+            : ($currentUserBeingEdited = "");
         }}
       >
         <RotateLeft size="18px" />
