@@ -2,6 +2,7 @@
   import { currentEdit } from "src/stores/context";
   import Edit from "./icons/Edit.svelte";
   import EyeSlash from "./icons/EyeSlash.svelte";
+  import Hourglass from "./icons/Hourglass.svelte";
 
   export let user: any;
 </script>
@@ -10,8 +11,14 @@
   <td class="p-2">
     <div class="font-bold text-gray-800 text-lg text-ellipsis flex">
       <div class="flex items-center">
-        {#if !user.active}
-          <div class="w-4 mr-2"><EyeSlash /></div>
+        {#if user.status == "deactivated"}
+          <div class="w-4 text-red-400">
+            <EyeSlash size="10" fill="currentColor" />
+          </div>
+        {:else if user.status == "invited"}
+          <div class="w-4 text-red-400">
+            <Hourglass size="10" fill="currentColor" />
+          </div>
         {/if}
         {user.firstName ? user.firstName : ""}&nbsp;{user.lastName
           ? user.lastName

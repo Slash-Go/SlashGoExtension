@@ -1,11 +1,16 @@
 <script>
   export let color = "currentColor";
-  export let ariaLabel = "inactive";
+  export let ariaLabel = "deactivated";
+  export let size = "18";
+  export let fill = "#000000";
 </script>
 
 <svg
   xmlns="http://www.w3.org/2000/svg"
   stroke={color}
+  width={size}
+  height={size}
+  {fill}
   aria-label={ariaLabel}
   viewBox="0 0 640 512"
 >
