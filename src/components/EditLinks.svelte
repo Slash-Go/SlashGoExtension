@@ -1,5 +1,5 @@
 <script type="ts">
-  import { currentLinkEdit, orgHero } from "../stores/context";
+  import { currentLinkBeingEdited, orgHero } from "../stores/context";
   import RotateLeft from "./icons/RotateLeft.svelte";
   import Save from "./icons/Save.svelte";
   export let link: any = {};
@@ -11,7 +11,7 @@
 
 <tr>
   <td class="p-2">
-    <div class="font-bold text-gray-800 text-lg text-ellipsis flex">
+    <div class="font-bold text-gray-800 text-base text-ellipsis flex">
       <div class="flex items-center">
         <span>{$orgHero}/</span>
         <input
@@ -59,7 +59,7 @@
       <button
         class="p-2"
         on:click={() => {
-          $currentLinkEdit = "";
+          $currentLinkBeingEdited = "";
         }}
       >
         <RotateLeft size="18px" />

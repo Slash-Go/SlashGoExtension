@@ -3,7 +3,7 @@
   import ListUser from "./ListUser.svelte";
   import EditUser from "./EditUser.svelte";
   import Loader from "./Loader.svelte";
-  import { currentEdit, currentCreate } from "src/stores/context";
+  import { currentUserBeingEdited, currentCreate } from "src/stores/context";
 
   let users = [];
 
@@ -27,7 +27,7 @@
     if (msg.type === "update_user_response") {
       if (msg.status === "success") {
         successMessage = "Updated!";
-        $currentEdit = "";
+        $currentUserBeingEdited = "";
         setTimeout(() => {
           successMessage = "";
         }, 2000);
@@ -66,6 +66,7 @@
   };
 
   onMount(async () => {
+    $currentUserBeingEdited = "";
     getUsers();
     isLoading = true;
   });
@@ -86,7 +87,7 @@
   {#if isLoading}
     <Loader />
   {:else}
-    <div class="flex justify-center">
+    <div class="flex p-3 justify-center">
       <input
         bind:this={searchTermInput}
         bind:value={searchTerm}
@@ -112,7 +113,7 @@
           <div class="text-center text-xs italic py-3.5">No users found!</div>
         {:else}
           {#each filteredUsers as user}
-            {#if $currentEdit != user.id}
+            {#if $currentUserBeingEdited != user.id}
               <ListUser {user} />
             {:else}
               <EditUser {user} />

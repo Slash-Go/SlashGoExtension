@@ -1,7 +1,7 @@
 <script lang="ts">
   import Delete from "./icons/Delete.svelte";
   import LockSolid from "./icons/LockSolid.svelte";
-  import { orgHero, currentLinkEdit } from "../stores/context";
+  import { orgHero, currentLinkBeingEdited } from "../stores/context";
   import { onMount } from "svelte";
   import Loader from "./Loader.svelte";
   import Edit from "./icons/Edit.svelte";
@@ -42,7 +42,7 @@
     } else if (msg.type === "update_link_response") {
       if (msg.status === "success") {
         successMessage = "Updated!";
-        $currentLinkEdit = "";
+        $currentLinkBeingEdited = "";
         setTimeout(() => {
           successMessage = "";
         }, 2000);
@@ -71,6 +71,7 @@
   };
 
   onMount(async () => {
+    $currentLinkBeingEdited = "";
     getLinks();
     isLoading = true;
   });
@@ -106,16 +107,16 @@
           </div>
         {:else}
           {#each filteredLinks as link}
-            {#if $currentLinkEdit != link.id}
+            {#if $currentLinkBeingEdited != link.id}
               <tr>
                 <td class="p-2">
-                  <div class="font-bold text-gray-800 text-lg text-ellipsis">
+                  <div class="font-bold text-gray-800 text-base text-ellipsis">
                     {$orgHero}/{#if link.private}my/{/if}{link.shortLink}
                   </div>
                   <div class="flex flex-wrap ">
                     <div class="flex w-full">
                       <div
-                        class="w-100 pt-2 pb-1 text-gray-400 text-left overflow-hidden truncate text-xs"
+                        class="w-100 pt-0 pb-1 text-gray-400 text-left overflow-hidden truncate text-xs"
                       >
                         {link.description}
                       </div>
@@ -138,7 +139,7 @@
                     <button
                       class="p-2"
                       on:click={() => {
-                        $currentLinkEdit = link.id;
+                        $currentLinkBeingEdited = link.id;
                       }}
                     >
                       <Edit />

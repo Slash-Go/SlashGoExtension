@@ -7,6 +7,6 @@ export const role = writable("user");
 export const domain = writable("https://api.slashgo.link");
 export const orgHero = writable("go");
 
-export const currentEdit = writable("");
+export const currentUserBeingEdited = writable("");
 export const currentCreate = writable(false);
-export const currentLinkEdit = writable("");
+export const currentLinkBeingEdited = writable("");
