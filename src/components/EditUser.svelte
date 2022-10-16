@@ -43,13 +43,13 @@
           type="email"
           placeholder="Email"
           bind:value={user.email}
-          class="mt-1 mb-1 pl-1 border border-slate-300 rounded-md text-left"
+          class="mt-1 mb-1 p-1 border border-slate-300 rounded text-left"
         /> |&nbsp;
       </div>
       <div class="text-left text-xs text-red-400 overflow-hidden truncate w-60">
         <select
           bind:value={user.role}
-          class="bg-gray-50 border border-gray-300 text-gray-900 rounded-md mt-1 mb-1"
+          class="bg-gray-50 border border-gray-300 text-gray-900 rounded mt-1 mb-1 p-1"
         >
           <option value="user">user</option>
           <option value="admin">admin</option>

@@ -32,7 +32,7 @@
       >
         <Edit />
       </button>
-      {#if !user.active}
+      {#if !user.status}
         <div class="m-2 pt-1 w-4"><EyeSlash /></div>
       {/if}
     </div>

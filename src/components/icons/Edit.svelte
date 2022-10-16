@@ -9,6 +9,7 @@
   width={size}
   height={size}
   stroke={color}
+  fill={color}
   aria-label={ariaLabel}
   viewBox="0 0 576 512"
 >

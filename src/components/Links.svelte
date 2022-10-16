@@ -134,7 +134,7 @@
                     <LockSolid size="20px" />
                   {/if}
                 </td>
-                <td class="p-2">
+                <td class="p-2 ">
                   <div class="flex justify-center">
                     <button
                       class="p-2"
