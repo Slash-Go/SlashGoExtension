@@ -35,5 +35,11 @@
   },
   "host_permissions": ["<all_urls>"],
   "omnibox": { "keyword": "go/" },
-  "permissions": ["storage", "tabs", "alarms", "declarativeNetRequest"]
+  "permissions": [
+    "identity",
+    "storage",
+    "tabs",
+    "alarms",
+    "declarativeNetRequest"
+  ]
 }

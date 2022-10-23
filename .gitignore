@@ -105,3 +105,6 @@ dist
 
 # Processed tailwind file
 public/css/index.css
+
+# Config file
+src/config.ts
