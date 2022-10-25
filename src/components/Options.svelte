@@ -11,6 +11,9 @@
       $accessToken = "";
       $refreshToken = "";
       chrome.runtime.sendMessage({ command: "logout" });
+      chrome.identity.clearAllCachedAuthTokens(() => {
+        console.log("Cleared all cached tokens");
+      });
     });
   };
 

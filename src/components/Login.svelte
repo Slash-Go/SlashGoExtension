@@ -1,6 +1,7 @@
 <script lang="ts">
   import axios, { AxiosError, type AxiosResponse } from "axios";
   import type { IStorage } from "src/types";
+  import { GOOGLE_CLIENT_ID } from "src/config";
   import {
     accessToken,
     refreshToken,
@@ -38,6 +39,71 @@
 
   const startSync = async () => {
     chrome.runtime.sendMessage({ command: "start_sync" });
+  };
+
+  const validate = (redirectURL: string) => {
+    if (redirectURL == null) {
+      console.log("Login was unsuccessful!");
+      errorMessage = `Login was unsuccessful`;
+      return;
+    }
+    const redirectURLSplit = redirectURL.split("#id_token=");
+    if (redirectURLSplit.length < 2) {
+      console.log("Login didn't return id token or was unsuccessful!");
+      errorMessage = `Login was unsuccessful`;
+      return;
+    }
+
+    let token = redirectURLSplit[1].split("&")[0];
+    axios
+      .post(`${$domain}/auth/login_google`, {
+        token,
+      })
+      .then((response: AxiosResponse) => {
+        if (response.status === 200) {
+          $accessToken = response.data.accessToken;
+          $refreshToken = response.data.refreshToken;
+          $role = response.data.role;
+          $orgHero = response.data.orgHero;
+          $lastVerifiedAt = new Date().toISOString();
+          errorMessage = "";
+          save();
+        }
+      })
+      .catch((e: AxiosError) => {
+        console.log("Could not log in user");
+        if (e.response!.status == 401) {
+          errorMessage = e.response.data["error"] as string;
+        } else {
+          errorMessage = `Unable to log user in`;
+        }
+      })
+      .finally(() => {
+        isLoggingIn = false;
+      });
+  };
+
+  const authenticate = () => {
+    isLoggingIn = true;
+    const redirectURL = chrome.identity.getRedirectURL();
+    const clientID = GOOGLE_CLIENT_ID;
+    const nonce = new Date().toISOString();
+    const scopes = ["openid", "email", "profile"];
+    let authURL = "https://accounts.google.com/o/oauth2/v2/auth";
+    authURL += `?client_id=${clientID}`;
+    authURL += `&response_type=id_token`;
+    authURL += `&access_type=offline`;
+    authURL += `&nonce=${nonce}`;
+    authURL += `&redirect_uri=${encodeURIComponent(redirectURL)}`;
+    authURL += `&scope=${encodeURIComponent(scopes.join(" "))}`;
+
+    return chrome.identity.launchWebAuthFlow(
+      {
+        interactive: true,
+        url: authURL,
+      },
+      validate
+    );
   };
 
   $: submit = async () => {
@@ -163,6 +229,12 @@
             type="submit">{isLoggingIn ? "Signing in..." : "Sign In"}</button
           >
 
+          <div
+            on:click={authenticate}
+            class="underline text-center hover:cursor-pointer"
+          >
+            Sign in with Google
+          </div>
           <div
             on:click={() => {
               resetPasswordMode = true;
